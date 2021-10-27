@@ -115,47 +115,9 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     frontier=util.Stack()
-
-    frontier.push([problem.getStartState(),[]])
-    print(frontier.list)
-    #isGoalState
-    visited=util.Queue()
-    i=0
-    while True:
-        if (frontier.isEmpty()):
-            break;
-        else:
-            new_node=frontier.pop()
-
-        #if new_node not in visited.list:
-       # print("Popped node is ",new_node[0]," and the expanded are ",problem.expand(new_node[0]))
-        visited.push(new_node[0])
-        #print(problem.expand(new_node[0]))
-        if problem.isGoalState(new_node[0]):
-            print("U did bre mpagasa")
-            return new_node[1]
-        else:
-            #print("Before")
-            #print("The result is: ",problem.getActions(new_node[0]))
-            expansion_nodes=problem.expand(new_node[0])
-            #print("After")
-            for each_node in expansion_nodes:
-                #print("here",frontier.list)
-                if (each_node[0] not in visited.list):
-                    result=new_node[1] + [each_node[1]]
-                    frontier.push([each_node[0],result])
-               
-           # print("Frontier now has ", frontier.list)
-
-    util.raiseNotDefined()
-
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    frontier=util.Queue()
     expanded=dict()
     frontier.push([problem.getStartState(),[]])
-    print(frontier.list)
+    #print(frontier.list)
     #isGoalState
     visited=util.Queue()
     i=0
@@ -167,34 +129,85 @@ def breadthFirstSearch(problem):
 
         #if new_node not in visited.list:
         #print("Popped node is ",new_node[0]," and the expanded are ",problem.expand(new_node[0]))
-        if expanded.get(new_node[0],)==None :
-            expanded[new_node[0]]="1"
-        visited.push(new_node[0])
-        #print(problem.expand(new_node[0]))
-        if problem.isGoalState(new_node[0]):
-            print("U did bre mpagasa")
-            return new_node[1]
-        else:
-            #print("Before")
-            #print("The result is: ",problem.getActions(new_node[0]))
-            expansion_nodes=problem.expand(new_node[0])
-            #print("After")
-            for each_node in expansion_nodes:
-                #print("here",frontier.list)
-                #print(each_node," ",expansion_nodes)
-                print("Dictionary is ",expanded)
-                if (each_node[0] not in visited.list) and (expanded.get(each_node[0],)==None ):
-                    #print("Frontier list is: ",frontier.list," and node is ",each_node[0])
+        #if expanded.get(new_node[0],)==None :
+           # expanded[new_node[0]]="1"
+        if (new_node[0] not in visited.list):
+            visited.push(new_node[0])
+            #print(problem.expand(new_node[0]))
+            if problem.isGoalState(new_node[0]):
+                #print("U did bre mpagasa")
+                return new_node[1]
+            else:
+                #print("Before")
+                #print("The result is: ",problem.getActions(new_node[0]))
+                expansion_nodes=problem.expand(new_node[0])
+                #print("After")
+                for each_node in expansion_nodes:
+                    #print("here",frontier.list)
+                    #print(each_node," ",expansion_nodes)
+                    #print("Dictionary is ",expanded)
+                   # if (each_node[0] not in visited.list):
+                        #print("Frontier list is: ",frontier.list," and node is ",each_node[0])
                     result=new_node[1] + [each_node[1]]
                     frontier.push([each_node[0],result])
-                    expanded[each_node[0]]="1"
-            #print("The list of frontier is: ",frontier.list)               
-           # print("Frontier now has ", frontier.list)
+                       # expanded[each_node[0]]="1"
+                #print("The list of frontier is: ",frontier.list)               
+               # print("Frontier now has ", frontier.list)
 
-        #if i==20:
-           # break;
-    
-       # i+=1
+            #if i==20:
+               # break;
+        
+           # i+=1
+
+    util.raiseNotDefined()
+
+def breadthFirstSearch(problem):
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
+    frontier=util.Queue()
+    expanded=dict()
+    frontier.push([problem.getStartState(),[]])
+    #print(frontier.list)
+    #isGoalState
+    visited=util.Queue()
+    i=0
+    while True:
+        if (frontier.isEmpty()):
+            break;
+        else:
+            new_node=frontier.pop()
+
+        #if new_node not in visited.list:
+        #print("Popped node is ",new_node[0]," and the expanded are ",problem.expand(new_node[0]))
+        #if expanded.get(new_node[0],)==None :
+           # expanded[new_node[0]]="1"
+        if (new_node[0] not in visited.list):
+            visited.push(new_node[0])
+            #print(problem.expand(new_node[0]))
+            if problem.isGoalState(new_node[0]):
+                #print("U did bre mpagasa")
+                return new_node[1]
+            else:
+                #print("Before")
+                #print("The result is: ",problem.getActions(new_node[0]))
+                expansion_nodes=problem.expand(new_node[0])
+                #print("After")
+                for each_node in expansion_nodes:
+                    #print("here",frontier.list)
+                    #print(each_node," ",expansion_nodes)
+                    #print("Dictionary is ",expanded)
+                   # if (each_node[0] not in visited.list):
+                        #print("Frontier list is: ",frontier.list," and node is ",each_node[0])
+                    result=new_node[1] + [each_node[1]]
+                    frontier.push([each_node[0],result])
+                       # expanded[each_node[0]]="1"
+                #print("The list of frontier is: ",frontier.list)               
+               # print("Frontier now has ", frontier.list)
+
+            #if i==20:
+               # break;
+        
+           # i+=1
 
     util.raiseNotDefined()
 

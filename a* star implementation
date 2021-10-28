@@ -232,12 +232,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     frontier=util.PriorityQueue()
     expanded=dict()
-    starting_node=[problem.getStartState(),[],heuristic(problem.getStartState(),problem)]
-    print("ok")
-    #print(starting_node,problem.expand(starting_node[0]))
-    #return None;
-    frontier.push([problem.getStartState(),[]],heuristic(problem.getStartState(),problem))
-    expanded[starting_node[0]]=[starting_node[0],[],starting_node[2]+heuristic(starting_node[0],problem)]
+    starting_node=[problem.getStartState(),[],0,heuristic(problem.getStartState(),problem)]
+    
+
+    frontier.push(starting_node,heuristic(problem.getStartState(),problem))
+    expanded[starting_node[0]]=[[],starting_node[2]]
    # if problem.isGoalState(starting_node[0]):
        # return starting_node[1]
 
@@ -249,35 +248,55 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         else:
             new_node=frontier.pop()
 
+
+        #print("The count is ",frontier.count)
+
         #if (new_node[0] not in (element[0] for element in expanded)):
          #   expanded.add()
-        print("Popped item is ",new_node[0],new_node)
+        #
+        #print("Popped item is ",new_node[0],new_node)
         if problem.isGoalState(new_node[0]):
             return new_node[1] 
 
 
         expansion_nodes=problem.expand(new_node[0])
-
+        print(expansion_nodes)
+        print("List of keys is ", expanded.keys())
 
         for each_node in expansion_nodes:
-            if (each_node[0] not in (element[0] for element in expanded)):
+         #   t=(element[0] for element in expanded)
+         #   print("pouska",t)
+            if (each_node[0] not in expanded.keys()):
+                print("Giati edw")
+                print(each_node[0])
                 result=new_node[1] + [each_node[1]]
+                result_distance=new_node[2] + each_node[2]
                 #print("Heuristic is ",heuristic(each_node[0],problem))
-                print(each_node[2])
-                expanded[each_node[0]]=[each_node[0],result,new_node[2]+each_node[2]+heuristic(each_node[0],problem)]
+               # print("Printing message is : ",each_node)
+              #  print(each_node[2])
+                f_n=result_distance+heuristic(each_node[0],problem)
+                expanded[each_node[0]]=[result,f_n]
                 #expanded.add([each_node[0],result,each_node[2]+heuristic(each_node[0],problem)])
-                frontier.push([each_node[0],result],new_node[2]+each_node[2]+heuristic(each_node[0],problem))
+                frontier.push([each_node[0],result,result_distance,f_n],f_n)
             #    print ("Frontier is ",frontier.heap)
              #   print("Expanded is ",expanded)
             else:
-                element_value=expanded[each_node[0]][2]
-                #print("To be printed",element_value)
-                if element_value<new_node[2]+each_node[2]+heuristic(each_node[0],problem):
-                    pass
+                print("TI shfa")
+                #print("Already in expanded ", each_node)
+                element_value=expanded[each_node[0]][1]
+               # print("To be printed that already exist: ",element_value)
+                result=new_node[1] + [each_node[1]]
+                result_distance=new_node[2] + each_node[2]
+
+                f_n=result_distance+heuristic(each_node[0],problem)
+               # print("Fn is ",f_n)
+                if element_value<f_n:
+                    print("Malista")
                 else:
-                    frontier.update([each_node[0],result],new_node[2]+each_node[2]+heuristic(each_node[0],problem))
-        print ("Frontier is ",frontier.heap)
-        print("Expanded is ",expanded)
+                    print("To fortnwis")
+                    frontier.push([each_node[0],result,result_distance,f_n],f_n)
+        #print ("Frontier is ",frontier.heap)
+        #print("Expanded is ",expanded)
         #i+=1
         #if i==10:
             

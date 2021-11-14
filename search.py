@@ -186,9 +186,9 @@ def breadthFirstSearch(problem):
 
         if problem.isGoalState(new_node[0]):
             #print("Kai edw")
-            print("Last")
-            print(new_node[1])
-            print(new_node[0])
+            #print("Last")
+            #print(new_node[1])
+            #print(new_node[0])
             return new_node[1]
 
         if (new_node[0] not in visited.list):
@@ -227,6 +227,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     counterihno=0
     frontier.push(starting_node,heuristic(problem.getStartState(),problem))
     #print(type(starting_node[0]),len(starting_node[0]),starting_node[0][1])
+    print("Starting node is ",starting_node)
     if len(starting_node[0])==1:
         var=1
     elif type(starting_node[0][1]) is list:
@@ -274,6 +275,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             else:
                 
                 #print("Already expanded")
+                i+=1
+                print("Already expanded and i is ",i)
                 expansion_nodes=nodes_in_expanded[new_node[0]]
             
             for each_node in expansion_nodes:
@@ -306,7 +309,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 nodes_in_expanded[new_node[0][0]]=expansion_nodes
             else:
                 #print("Already working node is: ",new_node[0][0])
-                #print("Already expanded")
+                i+=1
+                print("Already expanded and i is ",i)
                 expansion_nodes=nodes_in_expanded[new_node[0][0]]
                 #print("random")
 

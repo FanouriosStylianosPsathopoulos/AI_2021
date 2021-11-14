@@ -529,12 +529,13 @@ class FoodSearchProblem:
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
     def __init__(self, startingGameState):
+        #print("here")
         self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood())
         self.walls = startingGameState.getWalls()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
-
+        #print(self.start,list(self.start[1]))
     def getStartState(self):
         return self.start
 
@@ -594,8 +595,10 @@ class FoodSearchProblem:
 class AStarFoodSearchAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
+        #print("There")
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
+        #print("end")
 
 def foodHeuristic(state, problem):
     """
@@ -625,8 +628,118 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+    #print("gia mpes kai edew")
+    #print("edw")
     position, foodGrid = state
+    final_value=0
+    #print(foodGrid.asList())
     "*** YOUR CODE HERE ***"
+    food_list=[]
+    list_to_create_for_min=[]
+
+    list_to_create_for_max=[]
+    #print("Cuurent state is ", position, " and list is ",foodGrid.asList())
+    for specific_node in foodGrid.asList():
+        food_list.append(specific_node)
+
+
+    for x in food_list:
+        tuple_to_make=(x,position)
+        if tuple_to_make not in problem.heuristicInfo.keys():
+            result=mazeDistance(position,x,problem.startingGameState)
+            problem.heuristicInfo[tuple_to_make]=result
+            problem.heuristicInfo[position,x]=result
+            list_to_create_for_min.append(result)
+            for x_2 in food_list:
+                tuple_to_make_2=(x,x_2)
+                if tuple_to_make_2 not in problem.heuristicInfo.keys():
+                    result_2=mazeDistance(x,x_2,problem.startingGameState)
+                    problem.heuristicInfo[tuple_to_make_2]=result_2
+                    problem.heuristicInfo[(x_2,x)]=result_2
+                    list_to_create_for_max.append(result_2)
+                else:
+                    list_to_create_for_max.append(problem.heuristicInfo[tuple_to_make_2])
+
+        else:
+            list_to_create_for_min.append(problem.heuristicInfo[tuple_to_make])
+            for x_2 in food_list:
+                tuple_to_make_2=(x,x_2)
+                if tuple_to_make_2 not in problem.heuristicInfo.keys():
+                    result_2=mazeDistance(x,x_2,problem.startingGameState)
+                    problem.heuristicInfo[tuple_to_make_2]=result_2
+                    problem.heuristicInfo[(x_2,x)]=result_2
+                    list_to_create_for_max.append(result_2)
+                else:
+                    list_to_create_for_max.append(problem.heuristicInfo[tuple_to_make_2])
+                
+    if len(food_list):
+        return min(list_to_create_for_min) + max(list_to_create_for_max)
+    else:
+        return 0
+
+    #return None 
+
+
+
+
+    """print("Re mlk to state einai",state)
+    #print("To state einai ",state[0])
+    if problem.isGoalState(state):
+        print(state)
+        print("Message")
+        return 0
+
+    current_state=state[0]
+
+    food_list=[]
+    list_to_create=[]
+    heuristic_value=0
+    print("State is ",position, " and grid is ",foodGrid.asList())
+    for specific_node in foodGrid.asList():
+        food_list.append(specific_node)
+
+    length_of_food_list=len(food_list)
+
+    while length_of_food_list!=0:
+        #print("Current state is:, ",current_state," and", new_states)
+        for x in food_list:
+            list_to_create.append(abs(current_state[0] - x[0]) + abs(current_state[1] - x[1]))
+
+        #print("List is my friend",list_to_create)
+        
+        #return None
+        value_of_min=min(list_to_create)
+        print(list_to_create)
+        heuristic_value+=value_of_min
+        
+        current_state=food_list[list_to_create.index(value_of_min)]
+
+        del food_list[list_to_create.index(value_of_min)]
+
+        list_to_create=[]
+
+        length_of_food_list=length_of_food_list-1
+
+    #print("Heuristic value ",heuristic_value)
+        
+    
+    return heuristic_value """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #print("NotaTIOn is ",position,foodGrid)
+    return None
     return 0
 
 class ClosestDotSearchAgent(SearchAgent):

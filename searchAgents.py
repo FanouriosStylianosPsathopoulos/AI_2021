@@ -324,16 +324,13 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        print(state,self.corners)
         
         if "Unvisited" not in state[1]:
             return True
         else:
             if state[0] in self.corners:
-                #print("Goal state is:",state[0])
-                print("Mpes kai edw")
+
                 state[1][self.corners.index(state[0])]="Visited"
-                print(state)
             
         if "Unvisited" not in state[1]:
             return True
@@ -351,21 +348,19 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that child
         """
-        #print("Lets see here")
-        #print("Now u will expand the current node which is ",state)
+    
         children = []
-        #`("State is ",state)
+        
         for action in self.getActions(state):
-            #print("1")
+           
             next_state=self.getNextState(state,action)
-           # print("clarify")
-            #if next_state in self.corners:
+
             if next_state != False:
-                #print("Next state is ",next_state)
+                
                 cost=self.getActionCost(state,action,next_state)
-               # print("1")
+               
                 new_list=[]
-                #print("Id is ",id(new_list))
+                
                 for each in state[1]:
                     new_list.append(each)
 
@@ -373,7 +368,7 @@ class CornersProblem(search.SearchProblem):
                     new_list[self.corners.index(next_state)]="Visited"
 
                 children.append(([next_state,new_list],action,cost))
-           # print(children)
+           
 
             # Add a child state to the child list if the action is legal
             # You should call getActions, getActionCost, and getNextState.
@@ -444,19 +439,8 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    #print("State is: ",state)
-
-    #print(corners)
-    #print(type(corners))
-    #if "Unvisited" not in state[1]:
-        #print("ths mamas sou")
-        #return 0
-
-    print("Re mlk to state einai",state)
-    #print("To state einai ",state[0])
     if problem.isGoalState(state):
-        print(state)
-        print("Message")
+        
         return 0
 
     current_state=state[0]
@@ -470,8 +454,6 @@ def cornersHeuristic(state, problem):
 
     heuristic_value=0
 
-    #print(state)
-
     new_states=[]
     
     for counter,item in enumerate(visited_states):
@@ -482,17 +464,12 @@ def cornersHeuristic(state, problem):
             new_states.append(corners[counter])
             final_value+=1
 
-    
-    #print("Final Value is: ",final_value)
 
     while final_value!=0:
-        #print("Current state is:, ",current_state," and", new_states)
-        for x in new_states:
-            list_to_create.append(abs(current_state[0] - x[0]) + abs(current_state[1] - x[1]))
-
-        #print("List is my friend",list_to_create)
         
-        #return None
+        for x in new_states:
+            list_to_create.append(abs(current_state[0] - x[0]) + abs(current_state[1] - x[1])) #manhattan
+
         value_of_min=min(list_to_create)
 
         heuristic_value+=value_of_min
@@ -504,8 +481,6 @@ def cornersHeuristic(state, problem):
         list_to_create=[]
 
         final_value=final_value-1
-
-    print("Heuristic value ",heuristic_value)
         
     
     return heuristic_value
@@ -628,17 +603,17 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    #print("gia mpes kai edew")
-    #print("edw")
+    
     position, foodGrid = state
     final_value=0
-    #print(foodGrid.asList())
+    
     "*** YOUR CODE HERE ***"
     food_list=[]
     list_to_create_for_min=[]
 
     list_to_create_for_max=[]
-    #print("Cuurent state is ", position, " and list is ",foodGrid.asList())
+    
+
     for specific_node in foodGrid.asList():
         food_list.append(specific_node)
 
@@ -677,77 +652,13 @@ def foodHeuristic(state, problem):
     else:
         return 0
 
-    #return None 
-
-
-
-
-    """print("Re mlk to state einai",state)
-    #print("To state einai ",state[0])
-    if problem.isGoalState(state):
-        print(state)
-        print("Message")
-        return 0
-
-    current_state=state[0]
-
-    food_list=[]
-    list_to_create=[]
-    heuristic_value=0
-    print("State is ",position, " and grid is ",foodGrid.asList())
-    for specific_node in foodGrid.asList():
-        food_list.append(specific_node)
-
-    length_of_food_list=len(food_list)
-
-    while length_of_food_list!=0:
-        #print("Current state is:, ",current_state," and", new_states)
-        for x in food_list:
-            list_to_create.append(abs(current_state[0] - x[0]) + abs(current_state[1] - x[1]))
-
-        #print("List is my friend",list_to_create)
-        
-        #return None
-        value_of_min=min(list_to_create)
-        print(list_to_create)
-        heuristic_value+=value_of_min
-        
-        current_state=food_list[list_to_create.index(value_of_min)]
-
-        del food_list[list_to_create.index(value_of_min)]
-
-        list_to_create=[]
-
-        length_of_food_list=length_of_food_list-1
-
-    #print("Heuristic value ",heuristic_value)
-        
-    
-    return heuristic_value """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #print("NotaTIOn is ",position,foodGrid)
-    return None
-    return 0
-
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
     def registerInitialState(self, state):
         self.actions = []
         currentState = state
         while(currentState.getFood().count() > 0):
+            #print(currentState)
             nextPathSegment = self.findPathToClosestDot(currentState) # The missing piece
             self.actions += nextPathSegment
             for action in nextPathSegment:
@@ -765,12 +676,20 @@ class ClosestDotSearchAgent(SearchAgent):
         gameState.
         """
         # Here are some useful elements of the startState
+        #print("here gyxs")
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
+       
         "*** YOUR CODE HERE ***"
+        
+        all_food=food.asList()
+
+        path=search.breadthFirstSearch(problem)
+
+        return path
+        
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -798,13 +717,18 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.startState = gameState.getPacmanPosition()
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
-
     def isGoalState(self, state):
         """
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
         x,y = state
+
+        if state in self.food.asList():
+            return True
+        else:
+            return False 
+
 
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()

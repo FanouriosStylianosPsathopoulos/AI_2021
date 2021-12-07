@@ -275,6 +275,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         def Max_Value(self,gameState,index,currentDepth,a,b):
+            print("A and B are ",a,b)
             initial_val=float('-inf')
             legal_actions=gameState.getLegalActions(index)
             nodes_array=[]
@@ -287,19 +288,24 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 print("Move is for  ",index ," is : " ,move)
                 childGameState= gameState.getNextState(index, move)
                 print(childGameState)
+                #print("Current indexoulini is ",index)
+                print("Prior call")
                 value= Min_Value(self,childGameState,index+1,currentDepth,a,b)
                 print("First ",initial_val,value)
                 initial_val=max(initial_val,value)
                 if initial_val>b: 
                     print("ok 1")
+                    print("Value 5 returned for index ",index , " is ",initial_val)
                     return initial_val
                 a=max(a,initial_val)
                 #nodes_array.append(value)
             #value_to_return=max(nodes_array)
+            print("Value 6 returned for index ",index , " is ",initial_val)
             return initial_val
 
         def Min_Value(self,gameState,index,currentDepth,a,b):
             #check current Depth only if its the last ghost
+            print("A and B are ",a,b)
             #print("checkpoint")
             initial_val_pos=float('inf')
             initial_val_neg=initial_val_pos
@@ -323,13 +329,15 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     print(childGameState)
                     value= Max_Value(self,childGameState,0,currentDepth+1,a,b)
                     print("Value is ",value)
-                    print("Second ",initial_val_pos,value)
+                    print("Second  1",initial_val_pos,value)
                     initial_val_pos=min(initial_val_pos,value)
                     if initial_val_pos<a: 
                         print("ok 2")
+                        print("Value 3 returned for index ",index , " is ",initial_val_pos)
                         return initial_val_pos
                     b=min(b,initial_val_pos)
-                    
+                
+                print("Value 4 returned for index ",index , " is ",initial_val_pos)    
                 return initial_val_pos
             else:
                 print("Ghost is",index)
@@ -345,16 +353,18 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     print("Move is for  ",index ," is : " ,move)
                     childGameState= gameState.getNextState(index, move)
                     print(childGameState)
-                    value= Max_Value(self,childGameState,0,currentDepth+1,a,b)
+                    value= Min_Value(self,childGameState,index+1,currentDepth,a,b)
                     print("Value is ",value)
-                    print("Second ",initial_val_pos,value)
+                    print("Second 2",initial_val_pos,value)
                     initial_val_pos=min(initial_val_pos,value)
                     if initial_val_pos<a: 
                         print("ok 2")
+                        print("Value returned for index ",index , " is ",initial_val_pos)
                         return initial_val_pos
                     b=min(b,initial_val_pos)
         
-                return initial_val_neg
+                print("Value 2 returned for index ",index , " is ",initial_val_pos)
+                return initial_val_pos
 
                         
 
@@ -366,22 +376,32 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         print('Negative Infinity: ', negative_infinity)
 
         actions = gameState.getLegalActions(0)
-        allActions = {}
+        allActions = 0
         action_for_return=""
         print("First actions are ",actions)
         initial_val=float('-inf')
         for action in actions:
             print("Action is ",action)
-            allActions[action] = Min_Value(self,gameState.getNextState(0, action), 1, 1,negative_infinity,positive_infinity)
-            initial_val=max(initial_val,allActions[action])
+            successorState = gameState.getNextState(0, action)
+            #print("sth big like my dick")
+            allActions = Min_Value(self,successorState, 1, 1,negative_infinity,positive_infinity)
+            print("ok mate  ",initial_val,allActions)
+            #initial_val=max(initial_val,allActions)
+            if allActions > initial_val:   #find the max of the ghost actions
+                #print("ok mate  ",bestActionValue,nice)
+                initial_val = allActions
+                
+                action_for_return = action
             if initial_val>positive_infinity: 
                 print("ok 1")
-                print("Last ",initial_val,action)
+                print("Last person ",initial_val,action)
                 return action
-            negative_infinity=max(negative_infinity,initial_val)
             print("Last ",initial_val,action)
-            action_for_return=action
-        print("gtxm")
+            negative_infinity=max(negative_infinity,initial_val)
+            
+            #action_for_return=action
+        #print("gtxm")
+        print("Last person 2 ",action_for_return)
         return action_for_return
         util.raiseNotDefined()
 

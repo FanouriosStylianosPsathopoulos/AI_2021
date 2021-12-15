@@ -15,6 +15,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
+from inspect import stack
 
 from game import Agent
 
@@ -81,7 +82,7 @@ class ReflexAgent(Agent):
         print("New positions is : ",newPos)
         print("New food is : ",newFood.asList())
         print("New ghost states is : ",(newGhostStates))
-        #print("loop")
+        
         for x in newGhostStates:
             print(x)
         print("New scared times is : ",newScaredTimes)
@@ -282,6 +283,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             print("Legal actions  are ",legal_actions," and depth is ",currentDepth)
             if len(legal_actions)==0 or currentDepth>self.depth or gameState.isLose() or gameState.isWin():
                 #print("mallon edw kai dineis timh ",self.evaluationFunction(gameState) )
+                print("Game state is 2 lose: ",gameState.isLose())
+                print("Game state'S 2 legal actions are : ",len(legal_actions))
+                print("Game state is 2 win: ",gameState.isWin())
                 print("current depth is ",currentDepth)
                 return self.evaluationFunction(gameState)
             for move in legal_actions:
@@ -290,6 +294,11 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 print(childGameState)
                 #print("Current indexoulini is ",index)
                 print("Prior call")
+                print("Game state is 2 lose: tsitsomotsh ",gameState.isLose())
+                if gameState.isLose():
+                    print(self.evaluationFunctions)
+                print("Game state'S 2 legal actions are : ",len(legal_actions))
+                print("Game state is 2 win: ",gameState.isWin())
                 value= Min_Value(self,childGameState,index+1,currentDepth,a,b)
                 print("First ",initial_val,value)
                 initial_val=max(initial_val,value)
@@ -315,6 +324,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 
                 legal_actions=gameState.getLegalActions(index)
                 if gameState.isWin() or gameState.isLose():  #no reason to check the depth since it only changes at when Max plays
+                    print("Game state 1 is lose: ",gameState.isLose())
+                    print("Game state'S  1 legal actions are : ",len(legal_actions))
+                    print("Game state is 1 win: ",gameState.isWin())
                     return self.evaluationFunction(gameState)
                 if len(legal_actions)==0:
                     #print("edw")
@@ -343,6 +355,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 print("Ghost is",index)
                 legal_actions=gameState.getLegalActions(index)
                 if gameState.isWin() or gameState.isLose():  #no reason to check the depth since it only changes at when Max plays
+                    print("Game state is 3lose: ",gameState.isLose())
+                    print("Game state'S  3legal actions are : ",len(legal_actions))
+                    print("Game state is 3 win: ",gameState.isWin())
                     return self.evaluationFunction(gameState)
                 print("Legal actions for index: ",index ," are ",legal_actions)
                 if len(legal_actions)==0:
@@ -353,6 +368,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     print("Move is for  ",index ," is : " ,move)
                     childGameState= gameState.getNextState(index, move)
                     print(childGameState)
+
                     value= Min_Value(self,childGameState,index+1,currentDepth,a,b)
                     print("Value is ",value)
                     print("Second 2",initial_val_pos,value)
@@ -418,6 +434,70 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
+        def Max_Value(self,gameState,index,currentDepth):
+            legal_actions=gameState.getLegalActions(index)
+            
+            nodes_array=[]
+            
+            if currentDepth>self.depth or len(legal_actions)==0 or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+            for move in legal_actions:
+                childGameState= gameState.getNextState(index, move)
+                value= Min_Value(self,childGameState,index+1,currentDepth)
+                nodes_array.append(value)
+            value_to_return=max(nodes_array)
+            return value_to_return
+
+        def Min_Value(self,gameState,index,currentDepth):
+            
+            if index==gameState.getNumAgents()-1:
+                
+                legal_actions=gameState.getLegalActions(index)
+                if len(legal_actions)==0 or gameState.isWin() or gameState.isLose() :
+                    return self.evaluationFunction(gameState)
+                value=0
+                
+                for move in legal_actions:
+                    
+                    childGameState= gameState.getNextState(index, move)
+                    
+                    value= value + Max_Value(self,childGameState,0,currentDepth+1)
+                    
+                    
+                value_to_return=value/len(legal_actions)
+                
+                return value_to_return
+            else:
+                
+                legal_actions=gameState.getLegalActions(index)
+                
+                if len(legal_actions)==0:
+                    return self.evaluationFunction(gameState)
+                value=0
+
+                for move in legal_actions:
+                    
+                    childGameState= gameState.getNextState(index, move)
+                    
+                    value=value +  Min_Value(self,childGameState,index+1,currentDepth)
+                    
+                value_to_return=value/len(legal_actions)
+                
+                return value_to_return
+                        
+
+        actions = gameState.getLegalActions(0)
+        allActions = {}
+        for action in actions:
+
+            allActions[action] = Min_Value(self,gameState.getNextState(0, action), 1, 1)
+
+        direction=max(allActions, key=allActions.get)
+        
+        return direction
+
+
+
         util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):
@@ -428,7 +508,105 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()    
+
+    #childGameState = currentGameState.getPacmanNextState()
+    #print("CALLER FUNCTION: {}".format(stack()[1].function))
+    #print("CALLER FUNCTION: {}".format(stack()[2].function))
+    #print("CALLER FUNCTION: {}".format(stack()[3].function))
+    #print("CALLER FUNCTION: {}".format(stack()[4].function))
+    #print("I am being called")
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    #print("Current ")
+    #print(currentGameState)
+    #print(vars(currentGameState))
+    #print(vars(currentGameState["data"]))
+    #print("New one",vars(currentGameState.data))
+    #print("New new one",vars(currentGameState.data.layout))
+    #print("New positions is : ",newPos)
+    #print("New food is : ",newFood.asList()," and foods are: ",len(newFood.asList()))
+    #print("New foods are: ",len(newFood.asList()))
+    #print("New ghost states is : ",(newGhostStates))
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+    #print(currentGameState.getLegalActions())
+
+    currentGameState.getScore()
+
+    #compute the score and give it 60% importance
+
+    score_X=currentGameState.getScore() * 10
+
+    #compute the possible moves 
+
+    #the more moves the better for escape
+
+    score_moves= len(currentGameState.getLegalActions()) 
+
+    dist_score=0
+
+    x1,y1=newPos
+
+    for ghost in newGhostStates:
+        x_0,y_0=ghost.configuration.pos
+        if abs(x1-x_0) > abs(y1--y_0):
+            dist_score=abs(x1-x_0) 
+            dist_score=abs(y1--y_0) 
+
+    score_moves= (score_moves + dist_score) * 0.2
+     
+
+    pellets_score=len(currentGameState.data.layout.capsules) 
+
+    less=0
+
+    #for capsule in currentGameState.data.layout.capsules:
+
+    scores = [manhattanDistance(newPos,capsule) for capsule in currentGameState.data.layout.capsules]
+
+    min_score=min(scores)
+
+    scores_ghosts = [manhattanDistance(newPos,ghost.configuration.pos) for ghost in newGhostStates]
+
+    min_ghost=min(scores_ghosts)
+
+    #print(min_score,min_ghost)
+    if min_score<=min_ghost:
+        less=10
+    else:
+        less=0
+
+    less=less*0.2
+
+
+
+    #closest 
+
+    foods=[manhattanDistance (food,newPos) for food in newFood.asList()]
+
+    if len(foods)==0:
+        min_food=0
+    else:
+        min_food=min(foods)
+
+    #print(score_moves , score_X , less , newScaredTimes * 5)
+    last_score=score_moves + score_X + less + newScaredTimes[0] * 5
+
+    while min_food>=1:
+        last_score= last_score-5
+        min_food=min_food-1
+
+
+
+    #print("Last score is: ",last_score)
+    #print("End of current")
+    return last_score
+        
+    util.raiseNotDefined()   
+    
+
 
 # Abbreviation
 better = betterEvaluationFunction
